@@ -89,7 +89,7 @@ export function FileUpload({ onFileProcess }: FileUploadProps) {
           <div className="flex flex-col items-center pointer-events-none">
             <svg className="w-16 h-16 text-zinc-600 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
             <p className="text-xl font-medium text-zinc-300 mb-3">Click or drag a file here</p>
-            <p className="text-zinc-500 max-w-sm mx-auto">Supports .txt and .docx formatting up to 10,000 words. We'll strip any images.</p>
+            <p className="text-zinc-500 max-w-sm mx-auto">Supports .txt and .docx formatting up to 10,000 words. We&apos;ll strip any images.</p>
             {error && <p className="text-red-500 mt-6 text-sm font-medium p-3 bg-red-500/10 rounded">{error}</p>}
           </div>
         )}

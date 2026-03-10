@@ -99,6 +99,8 @@ The actual AI detection logic is built. When an author submits prose, the app ru
 
 ###PLACEHOLDER TO IMPLEMENT GEMINI API
 
+#### NEW INSTRUCTION FOR ANTIGRAVITY / GEMINI: for now, build a workaround to where there is no gemini api key being used, but the UI/interface allows for a system prompt to be 'copied' with the relevant dependencies - ran externally in an LLM - then the response copied back, then the app continues after that
+
     SYSTEM PROMPT for Gemini (use this exactly, it is carefully tuned for fiction):
     ```
     You are an expert literary editor and AI detection specialist. Your job is to analyse prose submitted by fiction authors and identify patterns that suggest AI generation.

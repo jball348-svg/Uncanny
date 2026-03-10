@@ -1,37 +1,58 @@
 # Uncanny
 
-An AI detection tool built for fiction writers. Find out where the machine crept into your prose.
+An AI detection tool built for fiction writers. Find out where the machine crept into your prose. Uncanny analyses creative writing for AI influence with sentence-level precision.
+
+![Screenshot coming soon](#)
 
 ## What it does
-Uncanny analyses creative writing and prose for AI influence using a hybrid approach:
-- Heuristic signals: sentence length variance (burstiness), vocabulary diversity, phrase repetition
-- LLM analysis: Claude API pattern detection tuned for fiction
+- **Sentence-level Analysis**: Pinpoints exactly which sentences feel robotic or predictable.
+- **Rhythm & Voice Detection**: Checks for uniform sentence lengths ("burstiness"), avoiding the trap of metronomic prose.
+- **Vocabulary Diversity**: Evaluates whether your word choice has the natural range of human writing.
+- **Phrase Patterns**: Catches repetitive structures and clichés often relied upon by AI.
+- **Fiction-Specific**: Tuned specifically for creative prose, not academic essays.
+
+## How it works
+Uncanny uses a hybrid approach to detect AI influence:
+1. **Local Heuristics**: Runs client-side analysis on vocabulary diversity, repetition, and sentence length variance.
+2. **LLM Pattern Detection**: Uses a manual, privacy-first prompt workflow where you generate an analysis prompt, run it through your own instance of ChatGPT/Claude/Gemini, and paste the JSON back in for rendering. This approach avoids API costs and keeps your unreleased prose out of automated third-party API logs.
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js 18+
-- An Anthropic API key (https://console.anthropic.com)
+- npm, yarn, or pnpm
 
 ### Local Development
-1. Clone the repo: `git clone https://github.com/jball348-svg/Uncanny.git`
-2. Install deps: `npm install`
-3. Copy the env file: `cp .env.example .env.local`
-4. Add your API key to `.env.local`
-5. Run: `npm run dev`
-6. Open http://localhost:3000
+1. Clone the repo: 
+   ```bash
+   git clone https://github.com/jball348-svg/Uncanny.git
+   ```
+2. Install dependencies: 
+   ```bash
+   npm install
+   ```
+3. Start the development server: 
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Deploy to Vercel
-1. Push to GitHub
-2. Import the repo in Vercel
-3. Add `ANTHROPIC_API_KEY` as an environment variable
-4. Deploy
+## Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjball348-svg%2FUncanny)
+
+1. Push your code to GitHub.
+2. Go to Vercel and import your repository.
+3. Deploy! (No environment variables are required since we use the manual API workaround).
 
 ## Tech Stack
-- Next.js 14 App Router
-- Tailwind CSS
-- Claude API (Anthropic)
-- Vercel
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Language**: TypeScript throughout
+- **Deployment**: Vercel
+
+## Contributing
+We'd love your help to make Uncanny even better! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
