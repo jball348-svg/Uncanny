@@ -19,7 +19,7 @@ Authors — novelists, short story writers, narrative non-fiction writers — wh
 ## Tech Stack
 - **Framework**: Next.js 14 App Router
 - **Styling**: Tailwind CSS
-- **Analysis**: Hybrid approach — client-side heuristics (burstiness, sentence length variance, vocabulary diversity) + Claude API for deep LLM-based pattern analysis
+- **Analysis**: Hybrid approach — client-side heuristics (burstiness, sentence length variance, vocabulary diversity) + Gemini API for deep LLM-based pattern analysis
 - **Deployment**: Vercel
 - **Repo**: https://github.com/jball348-svg/Uncanny
 

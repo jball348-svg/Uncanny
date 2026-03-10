@@ -7,12 +7,12 @@
 - [ ] REQ-02: Author can upload a .txt or .docx file instead of pasting
 - [ ] REQ-03: System calculates a burstiness score (sentence length variance)
 - [ ] REQ-04: System calculates a predictability score (vocabulary diversity, phrase repetition)
-- [ ] REQ-05: System sends text to Claude API for LLM-based AI pattern analysis
+- [ ] REQ-05: System sends text to Gemini API for LLM-based AI pattern analysis
 - [ ] REQ-06: Results page shows an overall AI-influence score (0–100%)
 - [ ] REQ-07: Results page highlights individual sentences/paragraphs by AI-likelihood (colour-coded)
 - [ ] REQ-08: Results page shows a plain-English breakdown of which signals were triggered
 - [ ] REQ-09: UI is clean, minimal, and speaks to authors (no academic jargon)
-- [ ] REQ-10: App is deployable to Vercel with a single environment variable (ANTHROPIC_API_KEY)
+- [ ] REQ-10: App is deployable to Vercel with a single environment variable (GEMINI_API_KEY)
 
 ### Should Have
 - [ ] REQ-11: Loading state with progress indicator during analysis
