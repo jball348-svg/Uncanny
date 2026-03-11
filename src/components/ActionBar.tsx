@@ -12,13 +12,26 @@ export function ActionBar() {
   if (!result) return null;
 
   const handleCopy = async () => {
+    const annotatedLines = result.sentences.map((sentence) => {
+      if (sentence.finalScore > 0.35 && sentence.reason) {
+        return `${sentence.text}\n⚑ ${sentence.reason}\n`;
+      }
+      return sentence.text;
+    });
+
     const textToCopy = `Uncanny Analysis Result
 Overall Score: ${Math.round(result.overallScore * 100)}%
 Verdict: ${result.verdictLabel}
 
 ${result.summary}
 
-Signals detected: ${result.dominantSignals.join(", ")}`;
+Signals detected: ${result.dominantSignals.join(", ")}
+
+────────────────────────────────
+ANNOTATED TEXT
+────────────────────────────────
+
+${annotatedLines.join("\n")}`.trim();
 
     try {
       await navigator.clipboard.writeText(textToCopy);

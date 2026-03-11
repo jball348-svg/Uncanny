@@ -7,6 +7,7 @@ import { ScoreDisplay } from '@/components/ScoreDisplay';
 import { SignalCards } from '@/components/SignalCards';
 import { AnnotatedProse } from '@/components/AnnotatedProse';
 import { ActionBar } from '@/components/ActionBar';
+import { RewritePanel } from '@/components/RewritePanel';
 import Link from 'next/link';
 
 export default function ResultsPage() {
@@ -53,6 +54,7 @@ export default function ResultsPage() {
         <SignalCards result={result} />
         <AnnotatedProse result={result} />
         <ActionBar />
+        <RewritePanel />
       </main>
     </div>
   );
