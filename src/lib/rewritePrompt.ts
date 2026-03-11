@@ -139,13 +139,25 @@ export function parseRewriteResponse(jsonString: string): RewriteResult {
     // If direct parse fails, try to repair common LLM JSON issues
   }
 
-  // Repair: replace literal newlines inside string values with \n
+  // Repair: replace literal newlines and unescaped quotes inside string values
   try {
-    const repaired = cleanString
-      .replace(/:\s*"([\s\S]*?)",?\s*(?=[}",])/g, (match, content) => {
-        const fixed = content.replace(/\n/g, '\\n').replace(/(?<!\\)"/g, '\\"');
-        return match.replace(content, fixed);
-      });
+    const keys = ['rewrittenText', 'original', 'revised', 'explanation', 'overallNote'];
+    const nextKeys = ['rewrittenText', 'changes', 'original', 'revised', 'explanation', 'overallNote'];
+    const keyPattern = keys.join('|');
+    const nextKeyPattern = nextKeys.join('|');
+    
+    const regex = new RegExp(
+      `"(${keyPattern})"\\s*:\\s*"([\\s\\S]*?)"(?=\\s*(?:,|\\}|\\])\\s*(?:"(?:${nextKeyPattern})"|\\}|\\]|\\$))`,
+      'g'
+    );
+
+    const repaired = cleanString.replace(regex, (match, key, content) => {
+      const fixedContent = content
+        .replace(/\n/g, '\\n')
+        .replace(/(?<!\\)"/g, '\\"');
+      return `"${key}": "${fixedContent}"`;
+    });
+    
     const parsed = JSON.parse(repaired);
     return validateAndShape(parsed);
   } catch (error) {
