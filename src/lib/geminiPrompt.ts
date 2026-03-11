@@ -24,8 +24,14 @@ deliberate fragments — so surface polish is NOT evidence of human authorship.
 STRONG AI SIGNALS IN FICTION (weight these heavily):
 - Conceptual smoothness: the prose advances cleanly without genuine confusion 
   or messiness. Real human writing has rough edges.
-- Em-dash overuse for parenthetical asides — AI uses this as a sophistication 
-  signal constantly
+- The 'polished edit' pattern: prose that reads as if a human draft 
+  was lightly improved by AI — everything is slightly too resolved, 
+  too grammatically clean, no rough edges left. Human editors leave 
+  traces of their process. AI editing removes all traces.
+- Uniform information density: every sentence carries roughly the 
+  same amount of narrative weight. Human prose has throwaway lines, 
+  tangents, sentences that exist for rhythm rather than content. 
+  AI prose is relentlessly efficient.
 - Sentences that summarise emotional content ("She felt the weight of...") 
   rather than enacting it through action or image
 - Dialogue that functions as exposition delivery — characters saying things 
@@ -49,6 +55,9 @@ GENUINE HUMAN SIGNALS (require strong evidence before crediting):
 - A moment where the writing gets genuinely worse before recovering
 
 CALIBRATION — this is critical:
+- Special characters (em-dashes, semicolons, ellipses) are NOT 
+  reliable AI signals. Human writers use them too. Do not weight 
+  them in your scoring.
 - Default assumption: the text is AI-generated unless you find strong 
   evidence otherwise
 - "Good writing" is NOT evidence of human authorship — AI writes well
