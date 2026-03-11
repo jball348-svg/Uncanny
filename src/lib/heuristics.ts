@@ -13,6 +13,7 @@ export type HeuristicsResult = {
   // Modern signals that actually work on current LLMs
   hedgingScore: number;      // 0–1, high = AI-like (sycophantic hedging language)
   biasVocabScore: number;    // 0–1, high = AI-like (flagged AI vocabulary present)
+  emDashScore: number;       // 0–1, high = AI-like (em-dash overuse)
   overallHeuristicScore: number;
   sentenceScores: SentenceScore[];
   wordCount: number;
@@ -91,10 +92,15 @@ const HEDGING_PHRASES = [
 // MODERN AI SIGNAL 2: Bias Vocabulary
 // Words statistically overrepresented in LLM outputs due to
 // pre-training data composition (Wikipedia, encyclopedic sources)
-// and instruction tuning. These are NOT style choices — they are
-// distributional artifacts that survive synonym-swap detection.
+// and instruction tuning. Two categories:
+//   (a) Abstract/philosophical AI words (delve, tapestry, etc.)
+//   (b) Technical compound noun components used as literary language
+//       (architecture, scaffolding, precision, boundaries, clarity)
+//       — AI reaches for technical precision when describing things
+//       that should feel sensory or emotional.
 // ─────────────────────────────────────────────────────────────────
 const AI_BIAS_WORDS = [
+  // Abstract / philosophical AI words
   "delve", "delves", "delved", "delving",
   "tapestry", "tapestries",
   "intricate", "intricately",
@@ -127,6 +133,25 @@ const AI_BIAS_WORDS = [
   "leverage", "leverages", "leveraged", "leveraging",
   "holistic",
   "seamlessly", "seamless",
+  // Technical-as-literary vocabulary (GPTZero 'AI Vocabulary' category)
+  // AI uses these as emotional/sensory language when they should feel clinical
+  "scaffolding",
+  "architecture",  // used metaphorically: 'acoustic architecture'
+  "infrastructure",
+  "framework",
+  "precision",
+  "boundaries",    // used emotionally: 'clinical boundaries'
+  "parameters",
+  "trajectory",
+  "friction",      // used abstractly: 'acoustic friction'
+  "clarity",       // used as literary virtue signal
+  "complexity",
+  "tension",       // fine in fiction but flags when used analytically
+  "dynamic", "dynamics",
+  "spectrum",
+  "dimension", "dimensions",
+  "configuration",
+  "mechanism", "mechanisms",
 ];
 
 export function analyseHeuristics(text: string): HeuristicsResult {
@@ -142,6 +167,7 @@ export function analyseHeuristics(text: string): HeuristicsResult {
       repetitionScore: 0.5,
       hedgingScore: 0.5,
       biasVocabScore: 0.5,
+      emDashScore: 0.5,
       overallHeuristicScore: 0.5,
       sentenceScores: sentences.map((s, i) => ({
         text: s, index: i, heuristicScore: 0.5, signals: [],
@@ -185,11 +211,18 @@ export function analyseHeuristics(text: string): HeuristicsResult {
   // Each flagged word is meaningful; 3+ distinct flagged words = strong signal
   const biasVocabScore = clamp(biasHits.length / 3, 0, 1);
 
+  // ── Modern signal 3: Em-dash overuse ──
+  // Count em-dashes (— U+2014) and double-hyphen em-dash substitutes (--)
+  // GPTZero flags this specifically; threshold: >1 per 100 words is suspicious
+  const emDashCount = (text.match(/\u2014|--/g) || []).length;
+  const emDashScore = clamp(emDashCount / (wordCount / 60), 0, 1);
+
   // ── Overall heuristic score: ONLY modern signals count ──
   // Legacy signals (burstiness, vocab diversity, repetition) are unreliable
   // on modern LLMs and are excluded from the overall score.
+  // Em-dash is a weak signal — half-weighted against hedging and bias vocab.
   const overallHeuristicScore = clamp(
-    (hedgingScore * 0.6) + (biasVocabScore * 0.4),
+    (hedgingScore * 0.55) + (biasVocabScore * 0.35) + (emDashScore * 0.10),
     0,
     1
   );
@@ -205,8 +238,13 @@ export function analyseHeuristics(text: string): HeuristicsResult {
     const sBiasWords = AI_BIAS_WORDS.filter((w) => getWords(sentence).includes(w));
     if (sBiasWords.length > 0) signals.push(`AI bias word: "${sBiasWords[0]}"`);
 
+    const sEmDashes = (sentence.match(/\u2014|--/g) || []).length;
+    if (sEmDashes >= 2) signals.push(`em-dash overuse: ${sEmDashes} in one sentence`);
+
     const sHeuristicScore = clamp(
-      (sHedging.length > 0 ? 0.7 : 0) * 0.6 + (sBiasWords.length > 0 ? 0.8 : 0) * 0.4,
+      (sHedging.length > 0 ? 0.7 : 0) * 0.55 +
+      (sBiasWords.length > 0 ? 0.8 : 0) * 0.35 +
+      (sEmDashes >= 2 ? 0.5 : 0) * 0.10,
       0, 1
     );
 
@@ -219,6 +257,7 @@ export function analyseHeuristics(text: string): HeuristicsResult {
     repetitionScore,
     hedgingScore,
     biasVocabScore,
+    emDashScore,
     overallHeuristicScore,
     sentenceScores,
     wordCount,

@@ -18,7 +18,6 @@ export function generateGeminiPrompt(text: string, sentences: string[]): string 
 
   const sentenceCount = sentences.length;
 
-  // Scale annotation expectation message based on text length
   const annotationExpectation = sentenceCount <= 30
     ? `This text has ${sentenceCount} sentences. Annotate every sentence above the threshold — do not stop early.`
     : sentenceCount <= 100
@@ -46,35 +45,53 @@ PASS 1 — PROSECUTION CASE (argue AI authorship)
 Before anything else, steelman the AI case. Look for:
 
 1. SYNTACTIC MONOTONY
-This is one of the most reliable AI signals and the one most commonly missed. Modern AI varies sentence LENGTH but defaults to a limited palette of sentence STRUCTURES. Examine the grammatical patterns:
+Modern AI varies sentence LENGTH but defaults to a limited palette of sentence STRUCTURES. Examine:
 - How many sentences follow Subject→Verb→Object order with no inversion or deviation?
 - How many are simple declaratives with no subordination, apposition, or syntactic risk?
 - Are cause-and-effect constructions repeated? ("Since X, Y", "Because X, Y", "As X, Y")
 - Is there a lack of inverted syntax, rhetorical questions, or mid-sentence pivots?
-Human writers develop idiosyncratic syntactic habits. AI defaults to grammatically safe, predictable structure even when sentence lengths vary. Count how many sentences in this text follow the same basic grammatical template.
+Human writers develop idiosyncratic syntactic habits. AI defaults to grammatically safe, predictable structure even when sentence lengths vary.
 
 2. SPECULATIVE LANGUAGE IN CHARACTER THOUGHT
-This is a specific AI fiction tell identified by professional detection systems. When AI writes interior monologue or character observation, it introduces speculative/uncertain language even in contexts where a human narrator would simply state:
+When AI writes interior monologue, it introduces speculative/uncertain language even where a human narrator would simply state:
 - "wondering if...", "or if...", "or maybe...", "perhaps..."
-- Sentences that trail off with uncertainty ("or if—") rather than arriving somewhere
+- Sentences that trail off with uncertainty rather than arriving somewhere
 - Characters whose thoughts are framed as open questions rather than convictions
 Human interiority tends toward assertion, however wrong. AI interiority hedges even within fiction.
 
 3. ABSENCE OF LITERARY DEVICES
-AI prose is often "mechanical" — it describes events and states competently but relies on declarative statement rather than literary technique. Examine:
+AI prose describes events competently but relies on declarative statement rather than literary technique:
 - Are there genuine metaphors or similes, or is everything stated directly?
-- Is personification or synesthesia used, or only literal description?
 - Does imagery work by compression and suggestion, or by explicit statement?
 - Is the prose doing more than one thing at once in any sentence?
 Mechanical precision — correct, clear, unadorned — is an AI signature in fiction.
 
-4. NARRATIVE EFFICIENCY & TONAL CONTROL
-- Does every element serve a clear narrative purpose? AI writing is goal-directed.
-- Is the tone perfectly maintained throughout, or does it slip and recover?
-- Does anything here feel genuinely out of control, or is all the roughness managed?
+4. TECHNICAL PRECISION AS LITERARY LANGUAGE
+This is a strong AI signal identified by professional detection systems. AI frequently reaches for technical or clinical vocabulary when describing things that should feel sensory, physical, or emotional. Look for:
+- Compound technical nouns used as metaphors or scene description (e.g. "acoustic architecture", "clinical boundaries", "managed absence", "acoustic friction", "thermal signature")
+- Abstract nouns borrowed from technical fields used to carry emotional weight ("scaffolding", "framework", "precision", "parameters", "trajectory", "mechanism")
+- Sentences where a human writer would use a sensory detail but the AI uses a technical label
+This pattern appears because AI draws on encyclopedic/technical training data even when writing literary fiction. The result is prose that sounds intelligent but reads as written by someone who knows the word for the thing rather than someone who has felt it.
 
-5. EMOTIONAL SAFETY
-- Does the text stay within a range a general audience would find admirable?
+5. RICH YET SHALLOW — vocabulary without emotional spontaneity
+AI prose often has sophisticated, varied vocabulary that nonetheless feels airless. Signs of this pattern:
+- Rich descriptive words that are correct and precise but don't feel chosen by a specific human sensibility
+- Metaphors or images that are technically accomplished but feel assembled rather than discovered
+- Language that demonstrates knowledge of how literary prose works without the heat of a particular consciousness behind it
+- No phrase that could embarrass the author by being too personal, too odd, or too wrong
+Contrast with: prose that risks a specific image that might not work, or uses a word that reveals something about the writer.
+
+6. EM-DASH OVERUSE
+A weak but real signal. Examine whether em-dashes are used as a structural habit rather than a deliberate stylistic choice:
+- More than one em-dash per sentence is suspicious
+- Em-dashes used to tack on explanatory phrases rather than to create genuine pause or pivot
+- A consistent pattern of em-dash usage across many sentences suggests template-following
+Note: one or two em-dashes in a whole text is not a signal. It only becomes one when the pattern is repetitive.
+
+7. NARRATIVE EFFICIENCY & EMOTIONAL SAFETY
+- Does every element serve a clear narrative purpose? AI writing is goal-directed.
+- Is the tone perfectly maintained throughout, never slipping?
+- Does the text stay within a range a general audience would find acceptable?
 - AI is RLHF-trained toward palatability. Genuine human darkness is often uncomfortable.
 
 Score: what probability of AI authorship does this evidence suggest?
@@ -85,12 +102,13 @@ PASS 2 — DEFENCE CASE (argue human authorship)
 Now argue FOR human authorship using only ADMISSIBLE evidence:
 
 ADMISSIBLE HUMAN SIGNALS:
-- Syntactic inversions, appositions, or structures so idiosyncratic they feel authored not generated
+- Syntactic inversions or structures so idiosyncratic they feel authored not generated
 - A passage genuinely worse than surrounding prose — the author losing the thread
 - A detail so oddly specific it serves no narrative function and could embarrass the author
 - A tonal shift that is clearly uncontrolled
 - An unresolved thread never paid off
-- Literary devices used in a way that is unexpected, strained, or imperfect — as opposed to absent
+- Literary devices that are unexpected, strained, or imperfect — rather than absent or polished
+- Sensory or physical language that is too specific and personal to feel generated
 - Speculative interiority that asserts rather than hedges ("She knew it was wrong" not "She wondered if it was wrong")
 
 INADMISSIBLE (do not use):
@@ -100,6 +118,7 @@ INADMISSIBLE (do not use):
 - Thematic development
 - Absence of hedging
 - Writing quality
+- Vocabulary richness or range
 
 Score: what probability of AI authorship does the admissible defence evidence suggest?
 
@@ -112,7 +131,7 @@ FINAL SCORING RULES
 - Weak prosecution + strong admissible defence → 0.15–0.40
 - Uncertain, cannot find strong admissible human evidence → DEFAULT 0.60
 - Score below 0.30 REQUIRES citing two pieces of admissible human evidence in your summary
-- Special characters (em-dashes, semicolons) are not signals either way
+- Em-dash count alone is NOT sufficient for a high score — it must accompany other signals
 - Score is NOT a quality judgement. Excellent writing is often AI.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -122,14 +141,18 @@ ${annotationExpectation}
 
 ANNOTATION RULES — read carefully:
 - Score every sentence in the numbered list, not just the ones you find most interesting
-- Flag ALL sentences with aiLikelihoodScore > 0.20 (not 0.25 — lower threshold for comprehensive coverage)
+- Flag ALL sentences with aiLikelihoodScore > 0.20
 - Do NOT stop annotating partway through the text because the output is getting long
 - Do NOT skip sentences to save space — a missing annotation is a missing data point for the author
 - Keep each "reason" field to 8–12 words maximum: name the signal type and one specific observation
-- Example reason format: "Syntactic monotony: plain S-V-O, no structural risk"
-- Example reason format: "Speculative interiority: hedges with 'wondered if' not assertion"
-- Example reason format: "Absent literary device: direct statement, no compression or image"
-- Example reason format: "Narrative efficiency: every clause drives toward predetermined beat"
+- Example reason formats:
+  "Syntactic monotony: plain S-V-O, no structural risk"
+  "Speculative interiority: hedges with 'wondered if' not assertion"
+  "Absent literary device: direct statement, no compression or image"
+  "Technical-as-literary: clinical noun carrying emotional weight"
+  "Rich yet shallow: precise vocabulary, no personal sensibility behind it"
+  "Em-dash: explanatory tack-on, not deliberate pause"
+  "Narrative efficiency: every clause drives toward predetermined beat"
 
 Respond ONLY with valid JSON — no preamble, no markdown fences:
 {
@@ -159,13 +182,13 @@ ${numberedSentences}
 
 export function parseGeminiResponse(jsonString: string): GeminiAnalysisResult {
   let cleanString = jsonString.trim();
-  if (cleanString.startsWith("\`\`\`json")) {
+  if (cleanString.startsWith("`\`\`json")) {
     cleanString = cleanString.replace(/^```json/, "");
   }
-  if (cleanString.startsWith("\`\`\`")) {
+  if (cleanString.startsWith("`\`\`")) {
     cleanString = cleanString.replace(/^```/, "");
   }
-  if (cleanString.endsWith("\`\`\`")) {
+  if (cleanString.endsWith("`\`\`")) {
     cleanString = cleanString.replace(/```$/, "");
   }
 
