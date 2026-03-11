@@ -142,7 +142,7 @@ Respond ONLY with valid JSON — no preamble, no markdown fences:
 }
 
 overallScore: 0.0–1.0 where 1.0 = definitely AI. Apply mandatory scoring rules.
-summary: 2–3 sentences citing specific structural evidence from both passes. Do not mention writing quality. If scoring below 0.30, explicitly name two admissible human evidence items.
+summary: cite specific structural evidence from both passes — as many sentences as needed to cover the dominant signals found. Name specific passages or sentence numbers where possible. Do not mention writing quality. If scoring below 0.30, explicitly name two admissible human evidence items.
 sentenceAnnotations: comprehensive annotation of every sentence above the threshold — do not truncate.
 dominantSignals: 2–4 labels for the strongest signals found across both passes.
 
