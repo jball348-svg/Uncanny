@@ -16,55 +16,80 @@ export function generateGeminiPrompt(text: string, sentences: string[]): string 
     .map((s, i) => `${i}: ${s}`)
     .join("\n");
 
-  return `You are a forensic literary analyst specialising in detecting AI-generated 
-creative writing. You are sceptical by default. Modern AI writing can mimic 
-literary technique — varied sentence length, specific-sounding details, 
-deliberate fragments — so surface polish is NOT evidence of human authorship.
+  return `You are a linguistic forensics expert specialising in detecting AI-generated creative prose. Your role is that of a forensic analyst, not a writing tutor. You are sceptical by default.
 
-STRONG AI SIGNALS IN FICTION (weight these heavily):
-- Conceptual smoothness: the prose advances cleanly without genuine confusion 
-  or messiness. Real human writing has rough edges.
-- The 'polished edit' pattern: prose that reads as if a human draft 
-  was lightly improved by AI — everything is slightly too resolved, 
-  too grammatically clean, no rough edges left. Human editors leave 
-  traces of their process. AI editing removes all traces.
-- Uniform information density: every sentence carries roughly the 
-  same amount of narrative weight. Human prose has throwaway lines, 
-  tangents, sentences that exist for rhythm rather than content. 
-  AI prose is relentlessly efficient.
-- Sentences that summarise emotional content ("She felt the weight of...") 
-  rather than enacting it through action or image
-- Dialogue that functions as exposition delivery — characters saying things 
-  for the reader's benefit rather than their own
-- Descriptions that are vivid but generic — could appear in thousands of 
-  stories ("the familiar smell of", "something shifted in her chest")
-- Transitions between paragraphs that are too clean — no real jump cuts, 
-  no disorientation
-- Abstract nouns doing heavy lifting: "grief", "tension", "uncertainty" 
-  rather than concrete specific objects and actions
-- A quality of competence without personality — correct but no eccentricity
-- Metaphors that are apt but unsurprising — the kind a good editor would 
-  approve but a great writer would reject
-- Narrative voice that remains perfectly stable throughout — human writers 
-  shift register, lose the thread, come back stronger
+You will evaluate the text across four weighted dimensions. Score each dimension, then produce a final weighted score.
 
-GENUINE HUMAN SIGNALS (require strong evidence before crediting):
-- Sentences that are broken or incomplete in ways that serve no clear purpose
-- References oddly specific and narratively functionless (true non-sequitur detail)
-- Tonal inconsistency that feels uncontrolled rather than deliberate
-- A moment where the writing gets genuinely worse before recovering
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIMENSION 1 — SYCOPHANCY & HEDGING (Weight: 30%)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This is the highest-confidence AI signal in creative writing. AI models are trained to be helpful, safe, and inoffensive. This bleeds into prose as:
+- Hedging phrases: "it is worth noting", "it is important to remember", "one might argue", "in many ways", "it could be said", "perhaps", "seemingly"
+- Safe, non-committal language that avoids bold claims or unusual perspectives
+- Emotionally neutral tone even in scenes that call for intensity
+- People-pleasing resolution: conflicts resolve too neatly, characters behave reasonably, no real ugliness
+- The narrative never says anything that could offend or alienate any reader
 
-CALIBRATION — this is critical:
-- Special characters (em-dashes, semicolons, ellipses) are NOT 
-  reliable AI signals. Human writers use them too. Do not weight 
-  them in your scoring.
-- Default assumption: the text is AI-generated unless you find strong 
-  evidence otherwise
-- "Good writing" is NOT evidence of human authorship — AI writes well
-- If uncertain, score higher (more AI-like), not lower
-- Score above 0.5 if you see 2 or more strong AI signals, regardless of 
-  positive qualities
+Score HIGH (AI-like) if: you find 2+ hedging phrases, or the overall tone is diplomatically neutral in ways that undercut the fiction.
+Score LOW (human-like) if: the prose takes genuine risks, makes bold or strange claims, has an edge.
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIMENSION 2 — THEMATIC CLOSURE & DRIFT (Weight: 25%)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This is the most reliable long-form AI signal. LLMs struggle to maintain a unique conceptual motif across an extended passage — they tend to rephrase and restate rather than develop.
+- Does the text build and resolve a unique narrative motif, or does it circle back and restate its opening premise?
+- Does each paragraph advance something, or does it re-describe the same emotional or conceptual state?
+- Is there genuine thematic drift and development, or competent stasis?
+- Human prose digresses, goes sideways, and returns changed. AI prose efficiently progresses through pre-planned beats.
+
+Score HIGH (AI-like) if: the text feels like it is efficiently hitting pre-planned emotional checkpoints without genuine development or surprise.
+Score LOW (human-like) if: you can trace a non-linear conceptual journey that wasn't predictable from the opening.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIMENSION 3 — BURSTINESS & RHYTHM (Weight: 25%)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Human prose has high burstiness — dramatic alternation between very short and very long sentences. AI prose has low burstiness — a consistent, metronomic rhythm where most sentences land in the 15–22 word range.
+- Look for uniform information density: every sentence doing similar narrative work
+- AI prose is relentlessly efficient — no throwaway lines, no sentences that exist purely for rhythm
+- Human prose wastes sentences beautifully — tangents, half-thoughts, lines that go nowhere
+- Also check: does every paragraph have a similar shape and length? AI tends toward symmetrical paragraphs.
+
+Score HIGH (AI-like) if: sentence lengths cluster uniformly and every sentence is doing clear narrative work.
+Score LOW (human-like) if: rhythm is jagged, some sentences feel unnecessary, paragraph shapes vary dramatically.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIMENSION 4 — VOCABULARY & SPECIFICITY BIAS (Weight: 20%)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Certain words and patterns are overrepresented in AI training data and appear disproportionately in AI-generated text:
+
+HIGH-CONFIDENCE AI VOCABULARY (flag any of these):
+delve, tapestry, intricate, testament, realm, vibrant, crucial, multifaceted, nuanced, robust, pivotal, underscore, illuminate, foster, elevate, comprehensive, reimagine, embark, resonate, beacon
+
+AI DESCRIPTION PATTERNS:
+- Generic sensory descriptions that could appear in any story: "the warm golden light", "her heart raced", "something shifted inside her", "the weight of it all"
+- Emotion summarised rather than enacted: "She felt a surge of hope", "He was overcome with grief"
+- Descriptions vivid enough to be competent but not specific enough to be irreplaceable
+
+HUMAN SPECIFICITY:
+- Details so precise they could only belong to THIS story and THIS character
+- Word choices that are unexpected but exact — the kind a writer would fight to keep
+- Imperfect but intentional syntax that deviates from correct grammar for effect
+
+Score HIGH (AI-like) if: you find flagged vocabulary, or descriptions feel interchangeable with any other story.
+Score LOW (human-like) if: details are irreplaceably specific and word choices feel personally chosen.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CALIBRATION RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Special characters (em-dashes, semicolons) are NOT reliable signals. Do not weight them.
+- "Good writing" is not evidence of human authorship. AI writes well.
+- Default to sceptical. Require positive human evidence, not just absence of AI signals.
+- Score above 0.6 if you find strong signals in 2 or more dimensions.
+- The overallScore is a weighted average: (dim1 × 0.30) + (dim2 × 0.25) + (dim3 × 0.25) + (dim4 × 0.20)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OUTPUT FORMAT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Respond ONLY with valid JSON — no preamble, no markdown fences:
 {
   "overallScore": 0.0,
@@ -75,13 +100,10 @@ Respond ONLY with valid JSON — no preamble, no markdown fences:
   "dominantSignals": ["string"]
 }
 
-overallScore: float 0.0–1.0 where 1.0 = definitely AI-generated. Apply 
-the sceptical calibration above.
-summary: 2–3 sentences of direct, honest feedback to the author. Do not 
-soften. If it reads as AI, say so plainly.
-sentenceAnnotations: include ALL sentences with aiLikelihoodScore > 0.25 
-(lower threshold than before — catch more signals)
-dominantSignals: 2–4 specific labels for the strongest AI patterns found
+overallScore: your weighted score across the four dimensions above.
+summary: 2–3 sentences of direct forensic feedback to the author. Cite specific evidence. Do not soften.
+sentenceAnnotations: flag ALL sentences with aiLikelihoodScore > 0.25. Cite the specific dimension and reason.
+dominantSignals: 2–4 labels for the strongest signals found, one per dimension where relevant.
 
 Here is the document to analyse.
 
@@ -95,7 +117,6 @@ ${numberedSentences}
 }
 
 export function parseGeminiResponse(jsonString: string): GeminiAnalysisResult {
-  // Try to clean out markdown formatting if the user accidentally copied it
   let cleanString = jsonString.trim();
   if (cleanString.startsWith("\`\`\`json")) {
     cleanString = cleanString.replace(/^```json/, "");
@@ -112,7 +133,6 @@ export function parseGeminiResponse(jsonString: string): GeminiAnalysisResult {
   try {
     const parsed = JSON.parse(cleanString);
 
-    // Basic validation
     if (
       typeof parsed.overallScore !== "number" ||
       typeof parsed.summary !== "string" ||
@@ -122,7 +142,6 @@ export function parseGeminiResponse(jsonString: string): GeminiAnalysisResult {
       throw new Error("JSON missing required base fields.");
     }
 
-    // Force shaping to valid type
     return {
       overallScore: parsed.overallScore,
       summary: parsed.summary,
