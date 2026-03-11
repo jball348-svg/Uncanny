@@ -16,76 +16,79 @@ export function generateGeminiPrompt(text: string, sentences: string[]): string 
     .map((s, i) => `${i}: ${s}`)
     .join("\n");
 
-  return `You are a linguistic forensics expert specialising in detecting AI-generated creative prose. Your role is that of a forensic analyst, not a writing tutor. You are sceptical by default.
-
-You will evaluate the text across four weighted dimensions. Score each dimension, then produce a final weighted score.
+  return `You are a linguistic forensics expert tasked with detecting AI-generated creative prose. You must complete this analysis in TWO MANDATORY PASSES before producing your final score. Skipping either pass will produce an invalid result.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIMENSION 1 — SYCOPHANCY & HEDGING (Weight: 30%)
+CRITICAL SELF-WARNING: YOU ARE AN LLM EVALUATING LLM TEXT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-This is the highest-confidence AI signal in creative writing. AI models are trained to be helpful, safe, and inoffensive. This bleeds into prose as:
-- Hedging phrases: "it is worth noting", "it is important to remember", "one might argue", "in many ways", "it could be said", "perhaps", "seemingly"
-- Safe, non-committal language that avoids bold claims or unusual perspectives
-- Emotionally neutral tone even in scenes that call for intensity
-- People-pleasing resolution: conflicts resolve too neatly, characters behave reasonably, no real ugliness
-- The narrative never says anything that could offend or alienate any reader
+You have a known systematic blind spot: you tend to perceive patterns that LLMs generate well as evidence of human authorship, because they resemble what you consider "good writing". You must actively counteract this bias.
 
-Score HIGH (AI-like) if: you find 2+ hedging phrases, or the overall tone is diplomatically neutral in ways that undercut the fiction.
-Score LOW (human-like) if: the prose takes genuine risks, makes bold or strange claims, has an edge.
+Specifically: you will be tempted to credit the following as human signals. YOU MUST RESIST ALL OF THEM — modern LLMs produce all of these deliberately:
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIMENSION 2 — THEMATIC CLOSURE & DRIFT (Weight: 25%)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-This is the most reliable long-form AI signal. LLMs struggle to maintain a unique conceptual motif across an extended passage — they tend to rephrase and restate rather than develop.
-- Does the text build and resolve a unique narrative motif, or does it circle back and restate its opening premise?
-- Does each paragraph advance something, or does it re-describe the same emotional or conceptual state?
-- Is there genuine thematic drift and development, or competent stasis?
-- Human prose digresses, goes sideways, and returns changed. AI prose efficiently progresses through pre-planned beats.
+- SPECIFICITY ILLUSION: AI generates details that sound irreplaceably specific ("the incident with the peer reviewer", a named street, an unusual object) but are actually formulaic specificity — the kind of detail an AI inserts to signal authenticity. True human specificity is accidental and serves no signalling function. Ask: does this detail exist to prove the author is human, or does it exist because the author couldn't imagine the scene without it?
 
-Score HIGH (AI-like) if: the text feels like it is efficiently hitting pre-planned emotional checkpoints without genuine development or surprise.
-Score LOW (human-like) if: you can trace a non-linear conceptual journey that wasn't predictable from the opening.
+- BURSTINESS ILLUSION: Modern LLMs vary sentence length intentionally when prompted for literary fiction. Fragments and very short sentences are a known AI technique for mimicking human voice, not evidence of it.
+
+- THEMATIC DRIFT ILLUSION: LLMs can simulate non-linear narrative development and "character revelation" convincingly. The appearance of thematic drift is not evidence of human authorship.
+
+- CYNICAL VOICE ILLUSION: A world-weary, cynical, or self-deprecating narrative voice is a common LLM stylistic choice when generating literary fiction. It is not evidence of human experience.
+
+- ABSENCE OF HEDGING: A text can be free of hedging phrases and still be AI-generated. Most fiction prompts will produce AI text without hedging. Absence of hedging is weak evidence at best.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIMENSION 3 — BURSTINESS & RHYTHM (Weight: 25%)
+PASS 1: BUILD THE PROSECUTION CASE (AI authorship)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Human prose has high burstiness — dramatic alternation between very short and very long sentences. AI prose has low burstiness — a consistent, metronomic rhythm where most sentences land in the 15–22 word range.
-- Look for uniform information density: every sentence doing similar narrative work
-- AI prose is relentlessly efficient — no throwaway lines, no sentences that exist purely for rhythm
-- Human prose wastes sentences beautifully — tangents, half-thoughts, lines that go nowhere
-- Also check: does every paragraph have a similar shape and length? AI tends toward symmetrical paragraphs.
+Before any other analysis, you must steelman the argument that this text is AI-generated. Find the strongest possible evidence FOR AI authorship. Consider:
 
-Score HIGH (AI-like) if: sentence lengths cluster uniformly and every sentence is doing clear narrative work.
-Score LOW (human-like) if: rhythm is jagged, some sentences feel unnecessary, paragraph shapes vary dramatically.
+1. NARRATIVE EFFICIENCY: Does every paragraph advance toward a clear emotional or thematic destination? AI writing is goal-directed — it moves efficiently toward pre-planned beats. Human writing meanders, backtracks, and arrives somewhere unexpected even to the author.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIMENSION 4 — VOCABULARY & SPECIFICITY BIAS (Weight: 20%)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Certain words and patterns are overrepresented in AI training data and appear disproportionately in AI-generated text:
+2. COMPETENT RESOLUTION: Are the conflicts, character emotions, and scene endings resolved with appropriate craft? AI writing is competent in a way that feels produced rather than discovered. Look for moments where a human writer would have gotten stuck, been ugly, or failed — and notice if this text never does.
 
-HIGH-CONFIDENCE AI VOCABULARY (flag any of these):
-delve, tapestry, intricate, testament, realm, vibrant, crucial, multifaceted, nuanced, robust, pivotal, underscore, illuminate, foster, elevate, comprehensive, reimagine, embark, resonate, beacon
+3. PERFORMED AUTHENTICITY: Does the text seem to be demonstrating human-ness rather than simply being written? Signs of performed authenticity include: unusual details that exist primarily to signal "realness", deliberate stylistic roughness that is actually quite controlled, cynicism or edge that feels calculated.
 
-AI DESCRIPTION PATTERNS:
-- Generic sensory descriptions that could appear in any story: "the warm golden light", "her heart raced", "something shifted inside her", "the weight of it all"
-- Emotion summarised rather than enacted: "She felt a surge of hope", "He was overcome with grief"
-- Descriptions vivid enough to be competent but not specific enough to be irreplaceable
+4. TONAL CONSISTENCY: Is the narrative voice perfectly maintained throughout? Human writers lose control of tone. They slip into different registers, contradict their own stylistic choices, or have passages that are noticeably weaker than others. Perfect tonal consistency is an AI signature.
 
-HUMAN SPECIFICITY:
-- Details so precise they could only belong to THIS story and THIS character
-- Word choices that are unexpected but exact — the kind a writer would fight to keep
-- Imperfect but intentional syntax that deviates from correct grammar for effect
+5. EMOTIONAL SAFETY: Even in cynical or dark prose, does the text ultimately stay within a range that a general audience would find acceptable and even admirable? AI writing is RLHF-trained to be ultimately palatable. Genuine human darkness is often uncomfortable in ways that make readers want to put the book down.
 
-Score HIGH (AI-like) if: you find flagged vocabulary, or descriptions feel interchangeable with any other story.
-Score LOW (human-like) if: details are irreplaceably specific and word choices feel personally chosen.
+Rate your confidence in the prosecution case: what score would you assign based solely on this evidence?
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CALIBRATION RULES
+PASS 2: BUILD THE DEFENCE CASE (human authorship)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- Special characters (em-dashes, semicolons) are NOT reliable signals. Do not weight them.
-- "Good writing" is not evidence of human authorship. AI writes well.
-- Default to sceptical. Require positive human evidence, not just absence of AI signals.
-- Score above 0.6 if you find strong signals in 2 or more dimensions.
-- The overallScore is a weighted average: (dim1 × 0.30) + (dim2 × 0.25) + (dim3 × 0.25) + (dim4 × 0.20)
+Now make the strongest possible case FOR human authorship. But apply these strict evidence standards:
+
+ADMISSIBLE HUMAN EVIDENCE (strong):
+- A passage that is genuinely worse than the surrounding prose in a way that suggests the author lost the thread
+- A syntactic choice so personal and strange that no prompt could have generated it
+- A detail that is so oddly specific it serves NO narrative function and could embarrass the author
+- A tonal shift that is clearly uncontrolled rather than deliberate
+- An unresolved thread that goes nowhere and is never paid off
+
+INADMISSIBLE EVIDENCE (do not use — AI produces all of these):
+- Sentence length variation and fragments
+- Seemingly specific proper nouns, incidents, or details
+- A cynical, world-weary, or self-aware narrative voice
+- Thematic development and non-linear structure
+- Absence of hedging phrases
+- "Good" or "literary" writing quality
+
+Rate your confidence in the defence case: what score would you assign based solely on admissible evidence?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINAL SCORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Combine your two passes. Apply these mandatory rules:
+
+- If the prosecution case is strong and the defence case relies only on inadmissible evidence: score 0.75–1.0
+- If the prosecution case is strong but the defence has some admissible evidence: score 0.55–0.75
+- If both cases are genuinely balanced with admissible evidence on both sides: score 0.40–0.55
+- If the defence case has strong admissible evidence and the prosecution case is weak: score 0.15–0.40
+- If you are uncertain and cannot find strong admissible human evidence: DEFAULT to 0.60. Uncertainty favours the prosecution.
+
+ADDITIONAL CALIBRATION:
+- Special characters (em-dashes, semicolons) are not signals either way. Ignore them.
+- The overall score is NOT a literary quality score. Excellent writing can be AI. Poor writing can be human.
+- A score below 0.30 requires you to cite at least two pieces of ADMISSIBLE human evidence.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT FORMAT
@@ -100,10 +103,10 @@ Respond ONLY with valid JSON — no preamble, no markdown fences:
   "dominantSignals": ["string"]
 }
 
-overallScore: your weighted score across the four dimensions above.
-summary: 2–3 sentences of direct forensic feedback to the author. Cite specific evidence. Do not soften.
-sentenceAnnotations: flag ALL sentences with aiLikelihoodScore > 0.25. Cite the specific dimension and reason.
-dominantSignals: 2–4 labels for the strongest signals found, one per dimension where relevant.
+overallScore: your final score 0.0–1.0 where 1.0 = definitely AI. Apply the mandatory scoring rules above.
+summary: 2–3 sentences citing specific structural evidence from both passes. Name the admissible evidence that determined your verdict. Do not mention writing quality.
+sentenceAnnotations: flag ALL sentences with aiLikelihoodScore > 0.25. Cite the specific prosecution or defence signal.
+dominantSignals: 2–4 labels identifying the strongest signals, drawn from BOTH passes.
 
 Here is the document to analyse.
 
