@@ -27,15 +27,15 @@ export function aggregateResults(
   sentences: string[]
 ): AnalysisResult {
   const overallScore =
-    heuristics.overallHeuristicScore * 0.4 + gemini.overallScore * 0.6;
+    heuristics.overallHeuristicScore * 0.25 + gemini.overallScore * 0.75;
 
   let verdict: "likely-human" | "mixed" | "ai-influence" = "mixed";
   let verdictLabel = "Mixed Signals";
 
-  if (overallScore < 0.35) {
+  if (overallScore < 0.25) {
     verdict = "likely-human";
     verdictLabel = "Likely Human";
-  } else if (overallScore > 0.65) {
+  } else if (overallScore > 0.55) {
     verdict = "ai-influence";
     verdictLabel = "AI Influence Detected";
   }
