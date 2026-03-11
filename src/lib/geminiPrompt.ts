@@ -16,6 +16,15 @@ export function generateGeminiPrompt(text: string, sentences: string[]): string 
     .map((s, i) => `${i}: ${s}`)
     .join("\n");
 
+  const sentenceCount = sentences.length;
+
+  // Scale annotation expectation message based on text length
+  const annotationExpectation = sentenceCount <= 30
+    ? `This text has ${sentenceCount} sentences. Annotate every sentence above the threshold — do not stop early.`
+    : sentenceCount <= 100
+    ? `This text has ${sentenceCount} sentences. You are expected to return many annotations — likely 20 or more. Do not self-censor or stop early to save output length. Keep each reason under 12 words.`
+    : `This text has ${sentenceCount} sentences. You MUST annotate comprehensively. Return annotations for every sentence above the threshold even if that means 50+ entries. Keep each reason to 8–12 words maximum to manage output length. Truncating your annotations is a failure of the analysis.`;
+
   return `You are a linguistic forensics expert tasked with detecting AI-generated creative prose. You must complete this analysis in TWO MANDATORY PASSES before producing your final score.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -109,6 +118,19 @@ FINAL SCORING RULES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT FORMAT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${annotationExpectation}
+
+ANNOTATION RULES — read carefully:
+- Score every sentence in the numbered list, not just the ones you find most interesting
+- Flag ALL sentences with aiLikelihoodScore > 0.20 (not 0.25 — lower threshold for comprehensive coverage)
+- Do NOT stop annotating partway through the text because the output is getting long
+- Do NOT skip sentences to save space — a missing annotation is a missing data point for the author
+- Keep each "reason" field to 8–12 words maximum: name the signal type and one specific observation
+- Example reason format: "Syntactic monotony: plain S-V-O, no structural risk"
+- Example reason format: "Speculative interiority: hedges with 'wondered if' not assertion"
+- Example reason format: "Absent literary device: direct statement, no compression or image"
+- Example reason format: "Narrative efficiency: every clause drives toward predetermined beat"
+
 Respond ONLY with valid JSON — no preamble, no markdown fences:
 {
   "overallScore": 0.0,
@@ -120,8 +142,8 @@ Respond ONLY with valid JSON — no preamble, no markdown fences:
 }
 
 overallScore: 0.0–1.0 where 1.0 = definitely AI. Apply mandatory scoring rules.
-summary: 2–3 sentences citing specific structural evidence. For each claim, name the sentence or passage. Do not mention writing quality. If scoring below 0.30, name your two admissible human evidence items explicitly.
-sentenceAnnotations: flag ALL sentences with aiLikelihoodScore > 0.25. For each, cite which prosecution signal applies — syntactic monotony, speculative interiority, absent literary devices, emotional safety, or narrative efficiency.
+summary: 2–3 sentences citing specific structural evidence from both passes. Do not mention writing quality. If scoring below 0.30, explicitly name two admissible human evidence items.
+sentenceAnnotations: comprehensive annotation of every sentence above the threshold — do not truncate.
 dominantSignals: 2–4 labels for the strongest signals found across both passes.
 
 Here is the document to analyse.
